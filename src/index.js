@@ -28,8 +28,7 @@ fetch("https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/maste
         const yAxis = d3.axisLeft(yScale);
 
         const svg = d3.select("body").append("svg")
-                        .attr("width", width).attr("height", height)
-                        .style("background-color", "#DDDDDD");
+                        .attr("width", width).attr("height", height);
         
         svg.selectAll("circle").data(data).enter().append("circle")
             .attr("cx", (d, i) => {
@@ -43,11 +42,11 @@ fetch("https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/maste
         
         svg.append("g").attr("id", "x-axis")
             .attr("transform", "translate(0," + (height - botPadding) + ")")
-            .call(xAxis);
+            .call(xAxis.tickFormat(x => x.toString()));
 
         svg.append("g").attr("id", "y-axis")
             .attr("transform", "translate(" + leftPadding + ", 0)")
-            .call(yAxis);
+            .call(yAxis.tickFormat(d3.timeFormat("%M:%S")));
 
         d3.select("body").append("text").text(JSON.stringify(data));
     });
