@@ -15,14 +15,14 @@ fetch("https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/maste
         const highestTime = data[data.length-1].Time.split(":");
 
         const xScale = d3.scaleLinear()
-                        .domain([parseInt(d3.min(data, d => d.Year)),
-                            parseInt(d3.max(data, d => d.Year))])
+                        .domain([parseInt(d3.min(data, d => d.Year))-1,
+                            parseInt(d3.max(data, d => d.Year))+1])
                         .range([leftPadding, width - rightPadding]);
 
         const yScale = d3.scaleTime()
                         .domain([new Date(lowestTime[0] * 60000 + lowestTime[1] * 1000),
                         new Date(highestTime[0] * 60000 + highestTime[1]* 1000)])
-                        .range([botPadding, height - topPadding]);
+                        .range([topPadding, height - botPadding]);
         
         const xAxis = d3.axisBottom(xScale);
         const yAxis = d3.axisLeft(yScale);
@@ -37,9 +37,17 @@ fetch("https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/maste
             })
             .attr("cy", (d, i) => {
                 let time = d.Time.split(":");
-                return height - yScale(new Date(time[0] * 60000 + time[1] * 1000));
+                return height + topPadding - botPadding - yScale(new Date(time[0] * 60000 + time[1] * 1000));
             })
             .attr("r", 5);
+        
+        svg.append("g").attr("id", "x-axis")
+            .attr("transform", "translate(0," + (height - botPadding) + ")")
+            .call(xAxis);
+
+        svg.append("g").attr("id", "y-axis")
+            .attr("transform", "translate(" + leftPadding + ", 0)")
+            .call(yAxis);
 
         d3.select("body").append("text").text(JSON.stringify(data));
     });
