@@ -37,7 +37,7 @@ fetch("https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/maste
             })
             .attr("cy", (d, i) => {
                 let time = d.Time.split(":");
-                return height + topPadding - botPadding - yScale(new Date(time[0] * 60000 + time[1] * 1000));
+                return yScale(new Date(time[0] * 60000 + time[1] * 1000));
             })
             .attr("r", 5);
         
