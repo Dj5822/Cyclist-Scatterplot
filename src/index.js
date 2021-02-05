@@ -14,6 +14,20 @@ fetch("https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/maste
         const lowestTime = data[0].Time.split(":");
         const highestTime = data[data.length-1].Time.split(":");
 
+        var tooltip = d3.select('body').append('div')
+            .attr("id", "tooltip")
+            .style("width", "200px")
+            .style("height", "150px")
+            .style("opacity", 0)
+            .style("text-align", "center")
+            .attr("data-year", "");
+        
+        var nameText = tooltip.append("text");
+        var nationalityText = tooltip.append("text");
+        var timeText = tooltip.append("text");
+        var yearText = tooltip.append("text");
+        var dopingText = tooltip.append("text");
+
         const xScale = d3.scaleLinear()
                         .domain([parseInt(d3.min(data, d => d.Year))-1,
                             parseInt(d3.max(data, d => d.Year))+1])
@@ -31,6 +45,12 @@ fetch("https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/maste
                         .attr("width", width).attr("height", height);
         
         svg.selectAll("circle").data(data).enter().append("circle")
+            .attr("class", "dot")
+            .attr("data-xvalue", (d, i) => d.Year)
+            .attr("data-yvalue", (d, i) => {
+                let time = d.Time.split(":");
+                return new Date(time[0] * 60000 + time[1] * 1000);
+            })
             .attr("cx", (d, i) => {
                 return xScale(d.Year);
             })
@@ -38,7 +58,31 @@ fetch("https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/maste
                 let time = d.Time.split(":");
                 return yScale(new Date(time[0] * 60000 + time[1] * 1000));
             })
-            .attr("r", 5);
+            .attr("r", 10)
+            .style("fill", (d, i) => {
+                if (d.Doping == "") {
+                    return "rgba(0,0,255,0.5)";
+                }
+                else {
+                    return "rgba(255,0,0,0.5)";
+                }
+            })
+            .on("mouseover", (d, i) => {
+                let time = d.Time.split(":");
+                tooltip.style("opacity", 1)
+                    .style("left", xScale(d.Year) + leftPadding + "px")
+                    .style("top", yScale(new Date(time[0] * 60000 + time[1] * 1000))
+                    + topPadding + "px")
+                    .attr("data-year", d.Year);
+                nameText.text("Name: " + d.Name);
+                nationalityText.text("Nationality: " + d.Nationality);
+                timeText.text("Time: " + d.Time);
+                yearText.text("Year: " + d.Year);
+                dopingText.text(d.Doping);
+            })
+            .on("mouseout", (d, i) => {
+                tooltip.style("opacity", 0);
+            });
         
         svg.append("g").attr("id", "x-axis")
             .attr("transform", "translate(0," + (height - botPadding) + ")")
@@ -47,6 +91,18 @@ fetch("https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/maste
         svg.append("g").attr("id", "y-axis")
             .attr("transform", "translate(" + leftPadding + ", 0)")
             .call(yAxis.tickFormat(d3.timeFormat("%M:%S")));
+        
+        var legend = d3.select('body').append('div')
+            .attr("id", "legend")
+            .style("width", "200px")
+            .style("height", "150px")
+            .style("opacity", 1)
+            .style("top", topPadding + "px")
+            .style("left", width - 200 + "px");
+
+        legend.append("label").text("Alleged Doping")
+
+        legend.append("label").text("No Alleged Doping");
 
         d3.select("body").append("text").text(JSON.stringify(data));
     });
