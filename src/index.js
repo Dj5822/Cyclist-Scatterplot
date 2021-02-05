@@ -5,6 +5,9 @@ const rightPadding = 30;
 const topPadding = 30;
 const botPadding = 80;
 
+const MINUTE = 60000;
+const SECOND = 1000;
+
 d3.select("body").append("h1")
     .text("Doping in Professional Bicycle Racing").attr("id", "title");
 
@@ -36,8 +39,8 @@ fetch("https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/maste
                         .range([leftPadding, width - rightPadding]);
 
         const yScale = d3.scaleTime()
-                        .domain([new Date(lowestTime[0] * 60000 + lowestTime[1] * 1000),
-                        new Date(highestTime[0] * 60000 + highestTime[1]* 1000)])
+                        .domain([new Date(lowestTime[0] * MINUTE + lowestTime[1] * SECOND),
+                        new Date(highestTime[0] * MINUTE + highestTime[1]* SECOND)])
                         .range([topPadding, height - botPadding]);
         
         const xAxis = d3.axisBottom(xScale);
@@ -51,28 +54,28 @@ fetch("https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/maste
             .attr("data-xvalue", (d, i) => d.Year)
             .attr("data-yvalue", (d, i) => {
                 let time = d.Time.split(":");
-                return new Date(time[0] * 60000 + time[1] * 1000);
+                return new Date(time[0] * MINUTE + time[1] * SECOND);
             })
             .attr("cx", (d, i) => {
                 return xScale(d.Year);
             })
             .attr("cy", (d, i) => {
                 let time = d.Time.split(":");
-                return yScale(new Date(time[0] * 60000 + time[1] * 1000));
+                return yScale(new Date(time[0] * MINUTE + time[1] * SECOND));
             })
             .attr("r", 10)
             .style("fill", (d, i) => {
                 if (d.Doping == "") {
-                    return "rgba(0,0,255,0.5)";
+                    return "rgba(0, 0, 255, 0.5)";
                 }
                 else {
-                    return "rgba(255,0,0,0.5)";
+                    return "rgba(255, 0, 0, 0.5)";
                 }
             })
             .on("mouseover", (d, i) => {
                 let time = d.Time.split(":");
                 tooltip.style("opacity", 1)
-                    .style("top", yScale(new Date(time[0] * 60000 + time[1] * 1000))
+                    .style("top", yScale(new Date(time[0] * MINUTE + time[1] * SECOND))
                     + topPadding + "px")
                     .attr("data-year", d.Year);
                 if (xScale(d.Year) < width/2) {
