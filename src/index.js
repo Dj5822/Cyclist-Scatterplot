@@ -1,5 +1,5 @@
-const width = 1800;
-const height = 840;
+const width = screen.width * 9/10;
+const height = screen.height * 8/10;
 const leftPadding = 80;
 const rightPadding = 30;
 const topPadding = 30;
