@@ -20,7 +20,9 @@ fetch("https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/maste
             .style("height", "150px")
             .style("opacity", 0)
             .style("text-align", "center")
-            .attr("data-year", "");
+            .attr("data-year", "")
+            .style("left", width - 100 + "px")
+            .style("top", "0px");
         
         var nameText = tooltip.append("text");
         var nationalityText = tooltip.append("text");
@@ -70,10 +72,15 @@ fetch("https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/maste
             .on("mouseover", (d, i) => {
                 let time = d.Time.split(":");
                 tooltip.style("opacity", 1)
-                    .style("left", xScale(d.Year) + leftPadding + "px")
                     .style("top", yScale(new Date(time[0] * 60000 + time[1] * 1000))
                     + topPadding + "px")
                     .attr("data-year", d.Year);
+                if (xScale(d.Year) < width/2) {
+                    tooltip.style("left", xScale(d.Year) + leftPadding + "px");
+                }
+                else {
+                    tooltip.style("left", xScale(d.Year) - 2*leftPadding + "px");
+                }
                 nameText.text("Name: " + d.Name);
                 nationalityText.text("Nationality: " + d.Nationality);
                 timeText.text("Time: " + d.Time);
@@ -81,7 +88,9 @@ fetch("https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/maste
                 dopingText.text(d.Doping);
             })
             .on("mouseout", (d, i) => {
-                tooltip.style("opacity", 0);
+                tooltip.style("opacity", 0)
+                    .style("left", width - 100 + "px")
+                    .style("top", "0px");
             });
         
         svg.append("g").attr("id", "x-axis")
