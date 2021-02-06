@@ -75,14 +75,13 @@ fetch("https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/maste
             .on("mouseover", (d, i) => {
                 let time = d.Time.split(":");
                 tooltip.style("opacity", 1)
-                    .style("top", yScale(new Date(time[0] * MINUTE + time[1] * SECOND))
-                    + topPadding + "px")
+                    .style("top", yScale(new Date(time[0] * MINUTE + time[1] * SECOND)) + "px")
                     .attr("data-year", d.Year);
                 if (xScale(d.Year) < width/2) {
-                    tooltip.style("left", xScale(d.Year) + leftPadding + "px");
+                    tooltip.style("left", xScale(d.Year) + 100 + "px");
                 }
                 else {
-                    tooltip.style("left", xScale(d.Year) - 2*leftPadding + "px");
+                    tooltip.style("left", xScale(d.Year) - 120 + "px");
                 }
                 nameText.text("Name: " + d.Name);
                 nationalityText.text("Nationality: " + d.Nationality);
@@ -106,15 +105,23 @@ fetch("https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/maste
         
         var legend = d3.select('body').append('div')
             .attr("id", "legend")
-            .style("width", "200px")
+            .style("width", "300px")
             .style("height", "150px")
             .style("opacity", 1)
             .style("top", topPadding + "px")
             .style("left", width - 200 + "px");
 
-        legend.append("label").text("Alleged Doping")
+        legend.append("div")
+            .style("width", "20px")
+            .style("height", "20px")
+            .style("background-color", "red");
+
+        legend.append("label").text("Alleged Doping");
+
+        legend.append("div")
+            .style("width", "20px")
+            .style("height", "20px")
+            .style("background-color", "blue");
 
         legend.append("label").text("No Alleged Doping");
-
-        d3.select("body").append("text").text(JSON.stringify(data));
     });
